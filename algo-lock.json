@@ -1,0 +1,42 @@
+{
+  "name": "algo-lock",
+  "methods": [
+    {
+      "name": "deposit",
+      "args": [
+        {
+          "type": "pay",
+          "name": "ptxn"
+        }
+      ],
+      "returns": {
+        "type": "uint64"
+      }
+    },
+    {
+      "name": "getBalance",
+      "args": [
+        {
+          "type": "account",
+          "name": "user"
+        }
+      ],
+      "returns": {
+        "type": "uint64"
+      }
+    },
+    {
+      "name": "withdraw",
+      "args": [
+        {
+          "type": "account",
+          "name": "recipient"
+        }
+      ],
+      "returns": {
+        "type": "uint64"
+      }
+    }
+  ],
+  "networks": {}
+}
