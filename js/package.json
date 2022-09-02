@@ -1,0 +1,22 @@
+{
+  "name": "js",
+  "version": "1.0.0",
+  "description": "algorand client js",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "demo": "node index.js"
+  },
+  "keywords": [
+    "algorand",
+    "pyteal",
+    "abi"
+  ],
+  "author": "allmysmarts",
+  "license": "ISC",
+  "dependencies": {
+    "algosdk": "^1.19.1",
+    "dotenv": "^16.0.2"
+  }
+}
