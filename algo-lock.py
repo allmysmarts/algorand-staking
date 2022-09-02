@@ -22,6 +22,7 @@ router = Router(
 @router.method
 def deposit(ptxn: abi.PaymentTransaction, *, output: abi.Uint64) -> Expr:
     return Seq(
+        Assert(ptxn.get().type_enum == TxnType.Payment),
         Assert(ptxn.get().sender() == Txn.sender()),
         Assert(ptxn.get().receiver() == Global.current_application_address()),
         Assert(ptxn.get().amount() > Int(0)),

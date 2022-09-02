@@ -29,7 +29,7 @@ const algod_host = "https://testnet-api.algonode.cloud";
   const acct = algosdk.mnemonicToSecretKey(process.env['MNEMONIC'] || '');
   const buff = fs.readFileSync("../algo-lock.json");
   const contract = new algosdk.ABIContract(JSON.parse(buff.toString()));
-  const appId = 107702485
+  const appId = 107712229
   const appAddress = algosdk.getApplicationAddress(appId)
   console.log('application address: ', appAddress)
 
