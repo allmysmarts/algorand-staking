@@ -36,6 +36,25 @@
       "returns": {
         "type": "uint64"
       }
+    },
+    {
+      "name": "lock",
+      "args": [
+        {
+          "type": "uint64",
+          "name": "amt"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "getLock",
+      "args": [],
+      "returns": {
+        "type": "(uint64,uint64,bool)"
+      }
     }
   ],
   "networks": {}

@@ -2,21 +2,60 @@
 txn NumAppArgs
 int 0
 ==
-bnz main_l8
+bnz main_l12
 txna ApplicationArgs 0
 method "deposit(pay)uint64"
 ==
-bnz main_l7
+bnz main_l11
 txna ApplicationArgs 0
 method "getBalance(account)uint64"
 ==
-bnz main_l6
+bnz main_l10
 txna ApplicationArgs 0
 method "withdraw(account)uint64"
 ==
-bnz main_l5
+bnz main_l9
+txna ApplicationArgs 0
+method "lock(uint64)void"
+==
+bnz main_l8
+txna ApplicationArgs 0
+method "getLock()(uint64,uint64,bool)"
+==
+bnz main_l7
 err
-main_l5:
+main_l7:
+txn OnCompletion
+int NoOp
+==
+txn ApplicationID
+int 0
+!=
+&&
+assert
+callsub getLock_4
+store 7
+byte 0x151f7c75
+load 7
+concat
+log
+int 1
+return
+main_l8:
+txn OnCompletion
+int NoOp
+==
+txn ApplicationID
+int 0
+!=
+&&
+assert
+txna ApplicationArgs 1
+btoi
+callsub lock_3
+int 1
+return
+main_l9:
 txn OnCompletion
 int NoOp
 ==
@@ -37,7 +76,7 @@ concat
 log
 int 1
 return
-main_l6:
+main_l10:
 txn OnCompletion
 int NoOp
 ==
@@ -58,7 +97,7 @@ concat
 log
 int 1
 return
-main_l7:
+main_l11:
 txn OnCompletion
 int NoOp
 ==
@@ -86,43 +125,43 @@ concat
 log
 int 1
 return
-main_l8:
+main_l12:
 txn OnCompletion
 int NoOp
 ==
-bnz main_l18
+bnz main_l22
 txn OnCompletion
 int OptIn
 ==
-bnz main_l17
+bnz main_l21
 txn OnCompletion
 int CloseOut
 ==
-bnz main_l16
+bnz main_l20
 txn OnCompletion
 int UpdateApplication
 ==
-bnz main_l15
+bnz main_l19
 txn OnCompletion
 int DeleteApplication
 ==
-bnz main_l14
+bnz main_l18
 err
-main_l14:
+main_l18:
 txn Sender
 global CreatorAddress
 ==
 assert
 int 1
 return
-main_l15:
+main_l19:
 txn Sender
 global CreatorAddress
 ==
 assert
 int 1
 return
-main_l16:
+main_l20:
 txn ApplicationID
 int 0
 !=
@@ -137,10 +176,10 @@ app_local_get
 app_global_put
 int 1
 return
-main_l17:
+main_l21:
 int 1
 return
-main_l18:
+main_l22:
 txn ApplicationID
 int 0
 ==
@@ -151,6 +190,11 @@ return
 // deposit
 deposit_0:
 store 2
+load 2
+gtxns TypeEnum
+int pay
+==
+assert
 load 2
 gtxns Sender
 txn Sender
@@ -213,4 +257,35 @@ int 0
 itxn_field Fee
 itxn_submit
 load 6
+retsub
+
+// lock
+lock_3:
+store 9
+global LatestTimestamp
+store 10
+int 0
+store 11
+load 9
+itob
+load 10
+itob
+concat
+byte 0x00
+int 0
+load 11
+setbit
+concat
+store 8
+txn Sender
+byte "agreement"
+load 8
+app_local_put
+retsub
+
+// getLock
+getLock_4:
+txn Sender
+byte "agreement"
+app_local_get
 retsub

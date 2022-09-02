@@ -22,7 +22,7 @@ router = Router(
 @router.method
 def deposit(ptxn: abi.PaymentTransaction, *, output: abi.Uint64) -> Expr:
     return Seq(
-        Assert(ptxn.get().type_enum == TxnType.Payment),
+        Assert(ptxn.get().type_enum() == TxnType.Payment),
         Assert(ptxn.get().sender() == Txn.sender()),
         Assert(ptxn.get().receiver() == Global.current_application_address()),
         Assert(ptxn.get().amount() > Int(0)),
@@ -64,6 +64,36 @@ def withdraw(recipient: abi.Account, *, output: abi.Uint64) -> Expr:
         InnerTxnBuilder.Submit(),
     )
 
+class LockAgreement(abi.NamedTuple):
+    amount: abi.Field[abi.Uint64]
+    lockedAt: abi.Field[abi.Uint64]
+    collected: abi.Field[abi.Bool]
+
+@router.method
+def lock(amt: abi.Uint64) -> Expr:
+    agreement = LockAgreement()
+    return Seq(
+        (amount := abi.Uint64()).set(amt.get()),
+        (lockedAt := abi.Uint64()).set(Global.latest_timestamp()),
+        (collectedAt := abi.Bool()).set(False),
+        agreement.set(amount, lockedAt, collectedAt),
+        App.localPut(
+            Txn.sender(),
+            Bytes("agreement"),
+            agreement.encode(),
+        )
+    )
+
+@router.method
+def getLock(*, output: LockAgreement) -> Expr:
+    return Seq(
+        output.decode(
+            App.localGet(
+                Txn.sender(),
+                Bytes("agreement"),
+            )
+        )
+    )
 
 if __name__ == "__main__":
     import os

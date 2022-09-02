@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "demo": "node index.js"
+    "demo1": "node index.js",
+    "demo2": "node tuple.js"
   },
   "keywords": [
     "algorand",
