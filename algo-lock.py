@@ -1,4 +1,5 @@
 from pyteal import *
+from typing import Literal as L
 
 is_creator = Txn.sender() == Global.creator_address()
 
@@ -70,7 +71,7 @@ class LockAgreement(abi.NamedTuple):
     collected: abi.Field[abi.Bool]
 
 @router.method
-def lock(amt: abi.Uint64) -> Expr:
+def storeTuple(amt: abi.Uint64) -> Expr:
     agreement = LockAgreement()
     return Seq(
         (amount := abi.Uint64()).set(amt.get()),
@@ -85,13 +86,71 @@ def lock(amt: abi.Uint64) -> Expr:
     )
 
 @router.method
-def getLock(*, output: LockAgreement) -> Expr:
+def loadTuple(*, output: LockAgreement) -> Expr:
     return Seq(
         output.decode(
             App.localGet(
                 Txn.sender(),
                 Bytes("agreement"),
             )
+        )
+    )
+
+THREE_ELEMENTS = abi.StaticArray[abi.Uint64, L[3]]
+
+@router.method
+def storeNumbers(input: THREE_ELEMENTS) -> Expr:
+    return Seq(
+        App.localPut(
+            Txn.sender(),
+            Bytes("agreements"),
+            input.encode()
+        ),
+    )
+
+@router.method
+def loadNumbers(*, output: THREE_ELEMENTS) -> Expr:
+    return output.decode(
+        App.localGet(
+            Txn.sender(),
+            Bytes("agreements")
+        )
+    )
+
+@router.method
+def pushNumbers(input: abi.Uint64) -> Expr:
+    buffer = ScratchVar(TealType.bytes)
+    return Seq(
+        buffer.store(
+            Concat(
+                App.localGet(
+                    Txn.sender(),
+                    Bytes("numbers"),
+                ),
+                input.encode()
+            )
+        ),
+        App.localPut(
+            Txn.sender(),
+            Bytes("numbers"),
+            buffer.load()
+        )
+    )
+@router.method
+def readNumbers(*, output: abi.DynamicArray[abi.Uint64]) -> Expr:
+    return output.decode(
+        App.localGet(
+            Txn.sender(),
+            Bytes("numbers")
+        )
+    )
+
+@router.method
+def readInitialized(*, output: abi.Uint64) -> Expr:
+    return output.set(
+        App.localGet(
+            Txn.sender(),
+            Bytes("initialized"),
         )
     )
 

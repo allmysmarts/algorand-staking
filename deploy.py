@@ -93,7 +93,7 @@ if __name__ == "__main__":
     # Deploy contract
     suggested_params = CLIENT.suggested_params()
     global_schema = transaction.StateSchema(num_uints=1, num_byte_slices=0)
-    local_schema = transaction.StateSchema(num_uints=1, num_byte_slices=1)
+    local_schema = transaction.StateSchema(num_uints=2, num_byte_slices=4)
     signed_txn = transaction.ApplicationCreateTxn(
         sender=ACCOUNT.getAddress(),
         sp=suggested_params,

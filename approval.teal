@@ -2,29 +2,49 @@
 txn NumAppArgs
 int 0
 ==
-bnz main_l12
+bnz main_l22
 txna ApplicationArgs 0
 method "deposit(pay)uint64"
 ==
-bnz main_l11
+bnz main_l21
 txna ApplicationArgs 0
 method "getBalance(account)uint64"
 ==
-bnz main_l10
+bnz main_l20
 txna ApplicationArgs 0
 method "withdraw(account)uint64"
 ==
-bnz main_l9
+bnz main_l19
 txna ApplicationArgs 0
-method "lock(uint64)void"
+method "storeTuple(uint64)void"
 ==
-bnz main_l8
+bnz main_l18
 txna ApplicationArgs 0
-method "getLock()(uint64,uint64,bool)"
+method "loadTuple()(uint64,uint64,bool)"
 ==
-bnz main_l7
+bnz main_l17
+txna ApplicationArgs 0
+method "storeNumbers(uint64[3])void"
+==
+bnz main_l16
+txna ApplicationArgs 0
+method "loadNumbers()uint64[3]"
+==
+bnz main_l15
+txna ApplicationArgs 0
+method "pushNumbers(uint64)void"
+==
+bnz main_l14
+txna ApplicationArgs 0
+method "readNumbers()uint64[]"
+==
+bnz main_l13
+txna ApplicationArgs 0
+method "readInitialized()uint64"
+==
+bnz main_l12
 err
-main_l7:
+main_l12:
 txn OnCompletion
 int NoOp
 ==
@@ -33,15 +53,33 @@ int 0
 !=
 &&
 assert
-callsub getLock_4
-store 7
+callsub readInitialized_9
+store 10
 byte 0x151f7c75
-load 7
+load 10
+itob
 concat
 log
 int 1
 return
-main_l8:
+main_l13:
+txn OnCompletion
+int NoOp
+==
+txn ApplicationID
+int 0
+!=
+&&
+assert
+callsub readNumbers_8
+store 9
+byte 0x151f7c75
+load 9
+concat
+log
+int 1
+return
+main_l14:
 txn OnCompletion
 int NoOp
 ==
@@ -52,10 +90,71 @@ int 0
 assert
 txna ApplicationArgs 1
 btoi
-callsub lock_3
+callsub pushNumbers_7
 int 1
 return
-main_l9:
+main_l15:
+txn OnCompletion
+int NoOp
+==
+txn ApplicationID
+int 0
+!=
+&&
+assert
+callsub loadNumbers_6
+store 8
+byte 0x151f7c75
+load 8
+concat
+log
+int 1
+return
+main_l16:
+txn OnCompletion
+int NoOp
+==
+txn ApplicationID
+int 0
+!=
+&&
+assert
+txna ApplicationArgs 1
+callsub storeNumbers_5
+int 1
+return
+main_l17:
+txn OnCompletion
+int NoOp
+==
+txn ApplicationID
+int 0
+!=
+&&
+assert
+callsub loadTuple_4
+store 7
+byte 0x151f7c75
+load 7
+concat
+log
+int 1
+return
+main_l18:
+txn OnCompletion
+int NoOp
+==
+txn ApplicationID
+int 0
+!=
+&&
+assert
+txna ApplicationArgs 1
+btoi
+callsub storeTuple_3
+int 1
+return
+main_l19:
 txn OnCompletion
 int NoOp
 ==
@@ -76,7 +175,7 @@ concat
 log
 int 1
 return
-main_l10:
+main_l20:
 txn OnCompletion
 int NoOp
 ==
@@ -97,7 +196,7 @@ concat
 log
 int 1
 return
-main_l11:
+main_l21:
 txn OnCompletion
 int NoOp
 ==
@@ -125,43 +224,43 @@ concat
 log
 int 1
 return
-main_l12:
+main_l22:
 txn OnCompletion
 int NoOp
 ==
-bnz main_l22
+bnz main_l32
 txn OnCompletion
 int OptIn
 ==
-bnz main_l21
+bnz main_l31
 txn OnCompletion
 int CloseOut
 ==
-bnz main_l20
+bnz main_l30
 txn OnCompletion
 int UpdateApplication
 ==
-bnz main_l19
+bnz main_l29
 txn OnCompletion
 int DeleteApplication
 ==
-bnz main_l18
+bnz main_l28
 err
-main_l18:
+main_l28:
 txn Sender
 global CreatorAddress
 ==
 assert
 int 1
 return
-main_l19:
+main_l29:
 txn Sender
 global CreatorAddress
 ==
 assert
 int 1
 return
-main_l20:
+main_l30:
 txn ApplicationID
 int 0
 !=
@@ -176,10 +275,10 @@ app_local_get
 app_global_put
 int 1
 return
-main_l21:
+main_l31:
 int 1
 return
-main_l22:
+main_l32:
 txn ApplicationID
 int 0
 ==
@@ -259,33 +358,79 @@ itxn_submit
 load 6
 retsub
 
-// lock
-lock_3:
-store 9
+// storeTuple
+storeTuple_3:
+store 12
 global LatestTimestamp
-store 10
+store 13
 int 0
-store 11
-load 9
+store 14
+load 12
 itob
-load 10
+load 13
 itob
 concat
 byte 0x00
 int 0
-load 11
+load 14
 setbit
 concat
-store 8
+store 11
 txn Sender
 byte "agreement"
-load 8
+load 11
 app_local_put
 retsub
 
-// getLock
-getLock_4:
+// loadTuple
+loadTuple_4:
 txn Sender
 byte "agreement"
+app_local_get
+retsub
+
+// storeNumbers
+storeNumbers_5:
+store 15
+txn Sender
+byte "agreements"
+load 15
+app_local_put
+retsub
+
+// loadNumbers
+loadNumbers_6:
+txn Sender
+byte "agreements"
+app_local_get
+retsub
+
+// pushNumbers
+pushNumbers_7:
+store 16
+txn Sender
+byte "numbers"
+app_local_get
+load 16
+itob
+concat
+store 17
+txn Sender
+byte "numbers"
+load 17
+app_local_put
+retsub
+
+// readNumbers
+readNumbers_8:
+txn Sender
+byte "numbers"
+app_local_get
+retsub
+
+// readInitialized
+readInitialized_9:
+txn Sender
+byte "initialized"
 app_local_get
 retsub

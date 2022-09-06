@@ -38,7 +38,7 @@
       }
     },
     {
-      "name": "lock",
+      "name": "storeTuple",
       "args": [
         {
           "type": "uint64",
@@ -50,10 +50,55 @@
       }
     },
     {
-      "name": "getLock",
+      "name": "loadTuple",
       "args": [],
       "returns": {
         "type": "(uint64,uint64,bool)"
+      }
+    },
+    {
+      "name": "storeNumbers",
+      "args": [
+        {
+          "type": "uint64[3]",
+          "name": "input"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "loadNumbers",
+      "args": [],
+      "returns": {
+        "type": "uint64[3]"
+      }
+    },
+    {
+      "name": "pushNumbers",
+      "args": [
+        {
+          "type": "uint64",
+          "name": "input"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "readNumbers",
+      "args": [],
+      "returns": {
+        "type": "uint64[]"
+      }
+    },
+    {
+      "name": "readInitialized",
+      "args": [],
+      "returns": {
+        "type": "uint64"
       }
     }
   ],
